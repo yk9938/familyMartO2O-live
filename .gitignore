@@ -1,0 +1,4 @@
+/node_modules
+/public/dist
+/functions/node_modules
+/functions/twitter-config.js
