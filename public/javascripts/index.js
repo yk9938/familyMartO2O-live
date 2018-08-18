@@ -588,22 +588,6 @@ document.addEventListener('DOMContentLoaded', function() {
   modal.init();
   window.q = app.q;
   window.params = app.params;
-  // axios.get('https://api.mobileads.com/mgd/q?col=testCol').then((r) => {
-  // 	console.log(r);
-  // }).catch((e) => {
-  // 	console.log(e);
-  // });
-  var uQuery = JSON.stringify({
-    id: "892241160915238912"
-  });
-
-      
-  axios.delete('https://api.mobileads.com/mgd/dltOne?col=testCol&qobj=' + encodeURIComponent(uQuery)).then((r) => {
-  	console.log(r);
-  }).catch((e) => {
-  	console.log(e);
-  });
-
 });
 
 export {
