@@ -8,7 +8,7 @@ var domain = 'https://www.mobileads.com';
 // var domain = 'http://localhost:8080';
 var userCollection = 'testCol';
 var couponCollection = 'testCoupons';
-var functionsDomain = 'https://us-central1-familymarto2odemo.cloudfunctions.net/twitter';
+var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
 
 var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
 var adUserId = '4441';
