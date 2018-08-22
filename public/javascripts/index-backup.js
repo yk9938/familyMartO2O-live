@@ -2,9 +2,8 @@ import miniPages from './miniPages';
 import {singleAnswerQuestion, multipleAnswerQuestion, dropdownQuestion} from './questions';
 import miniSelect from './miniSelect';
 import modal from './modal';
-// import {winningLogic, coupon} from './winningLogic';
-import winningLogic from './winningLogic2';
-import user from './user2';
+import {winningLogic, coupon} from './winningLogic';
+import user from './user';
 import '../stylesheets/miniSelect.css';
 import '../stylesheets/style.css';
 import '../stylesheets/miniCheckbox.css';
@@ -36,9 +35,6 @@ var app = {
 		      }
 		  } 
 		  return query_string;
-	},
-	generateCouponLink(userId) {
-		return 'https://couponcampaign.ienomistyle.com/サラダスムージー/coupon.html?userId=' + userId; 
 	},
 	initResult(state, couponLink) {
 		if (state == 'win') {
@@ -74,38 +70,52 @@ var app = {
 	processResult() {
 		winningLogic.process(this.q, !user.isWanderer).then((resultProperties) => {
 			console.log(resultProperties);
+			var state = resultProperties.trackingResult;
 			var actualResult = resultProperties.actualResult;
 			var group = resultProperties.group;
+			var flag = resultProperties.flag;
+			var couponInfo = resultProperties.couponInfo;
+
 			if (!user.isWanderer) {
-				user.mark(user.info.id, actualResult, group).then((response) => {
-					winningLogic.processed = true;
-					console.log(response)
-					if (response.data.couponCode) {
-						var couponLink = this.generateCouponLink(user.info.id);
-						user.saveLocal(user.info.id, response.data.couponCode, 'win'); //rmb allow this back
-						this.initResult('win', couponLink);
-						var message = 'サラダスムージークーポンが当たりました! ' + encodeURI(couponLink);
-						if (user.info.id.indexOf('@') > -1) { // login via email
-				        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
-				        	 user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
+				if (actualResult == 'win') {
+					user.win(user.info.id, group, user.source, couponInfo).then((response) => {
+						console.log(response);
+						if (response.data.couponLink) {
+							user.saveLocal(user.info.id, response.data.couponLink, 'win');
+							this.initResult('win', response.data.couponLink);
+							var message = 'サラダスムージークーポンが当たりました! ' + encodeURI(response.data.couponLink);
+
+							if (user.info.id.indexOf('@') > -1) { // login via email
+			        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + response.data.couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
+		        	  user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
+							}
+							else {
+								user.messageTwitter(message);
+							}
+							// user.passResult(user.info.id, flag, user.source, couponInfo.couponLink);
 						}
 						else {
-							user.messageTwitter(message);
+							this.initResult('lose');
+							user.saveLocal(user.info.id, '', 'lose');
+							// user.passResult(user.info.id, flag, user.source);
 						}
-						// user.passResult(user.info.id, flag, user.source, couponInfo.couponLink);
-					}
-					else {
-						user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
-						this.initResult('lose');
-					}
-				}).catch((error) => {
-					console.log(error);
-					winningLogic.processed = true;
-					user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
-		  			this.initResult('lose');
-				});
+					}).catch((error) => {
+	  				console.log(error);
+		  			this.initResult('win');
+	  			});
+	  		}
+	  		else {
+	  			user.lose(user.info.id, user.source).then((response) => {
+	  				console.log(response);
+	  				// user.passResult(user.info.id, flag, user.source);
+	  			}).catch((error) => {
+	  				console.log(error);
+	  			});
+	  			user.saveLocal(user.info.id, '', 'lose');
+	  			this.initResult('lose');
+	  		}
 
-	  		// if (actualResult == 'win') {
+	  		// if (state == 'win') {
 	  			//track win
 	  			// user.trackWin(user.info.id);
 	  		// }
@@ -116,7 +126,7 @@ var app = {
 
 			}
 			else {
-				this.initResult(actualResult);
+				this.initResult(state);
 			}	
 		});
 	},
@@ -162,7 +172,7 @@ var app = {
 
 		if (user.info.state == 'win') {
 			console.log(user.info);
-			this.initResult('win', this.generateCouponLink(user.info.id));
+			this.initResult('win', user.info.couponLink);
 			this.pages.toPage('resultPage');
 		}
 		else if (user.info.state == 'lose') {
@@ -209,12 +219,13 @@ var app = {
 	  }
 	  
 	  /* Finished Answering Questions, process result */
-	  document.getElementById('toVideo').addEventListener('click', () => {
-	  	if (!winningLogic.processed) {
-	  		winningLogic.processed = true;
+	  /*var processed = false;
+	  document.getElementById('toResult').addEventListener('click', () => {
+	  	if (!processed) {
+	  		processed = true;
 	  		this.processResult();
 	  	}
-	  });
+	  });*/
 
 		/* email registration */
 	  var form = document.getElementById('regForm');
@@ -356,7 +367,7 @@ var app = {
 					user.loadLocal();
 				}
 				else {
-					user.saveLocal(userId, response.data.user.couponCode, response.data.user.state); 
+					user.saveLocal(userId, response.data.user.couponLink, response.data.user.state); 
 				}
 				user.source = this.params.source;
 				if (isTwitter) {
@@ -559,13 +570,11 @@ var app = {
         events: {
           'onStateChange': (event) => {
             if (event.data == YT.PlayerState.ENDED) {
-            	console.log(winningLogic.processed);
-            	if (!winningLogic.processed) {
-					this.initResult('lose');
-				}
-				else {
-					this.pages.toPage('resultPage');
-				}
+            	if (!processed) {
+	            	processed = true;
+	            	this.processResult();
+								this.pages.toPage('resultPage');
+							}
             }
           }
         }
@@ -579,22 +588,22 @@ document.addEventListener('DOMContentLoaded', function() {
   modal.init();
   window.q = app.q;
   window.params = app.params;
-/*  var uQuery = JSON.stringify({
-		redeemed: true
-	});
-	var updateCoupon = JSON.stringify({
-		redeemed: false,
-		owner: ""
-	});
+    var uQuery = JSON.stringify({
+        id:"892241160915238912"
+      });
 
-	axios.post('https://api.mobileads.com/mgd/upd?col=testCoupons2&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
-	.then((resp) => {
-		console.log(resp);
-	}).catch((error) => {
-		console.log(error)
-	})*/
+       // axios.post('https://api.mobileads.com/mgd/upd?col=testCoupons&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
+      // axios.delete('https://api.mobileads.com/mgd/dlt?col=testCol')
+      // axios.delete('https://api.mobileads.com/mgd/dltOne?col=testCol&qobj=' + encodeURIComponent(uQuery))
+      axios.get('https://api.mobileads.com/mgd/q?col=testCol')
+      .then((resp) => {
+      	console.log(resp)
+      }).catch((e) => {
+      	console.log(e);
+      })
 });
 
 export {
-	user
+	user,
+	coupon,
 }
