@@ -231,7 +231,7 @@ var app = {
         spinner.style.display = 'none';
         if (response.data.status == true) {
         	this.formSections.toPage('doneSec');
-        	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/サラダスムージー/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/サラダスムージー/?userId=' + email + '</a>';
+        	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/?userId=' + email + '</a>';
         	user.sendEmail(email, 'Ienomistyle クーポンキャンペーン', emailContent);
         	// user.trackRegister();
         }
