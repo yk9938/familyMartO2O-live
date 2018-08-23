@@ -38,7 +38,7 @@ var app = {
 		  return query_string;
 	},
 	generateCouponLink(userId) {
-		return 'https://couponcampaign.ienomistyle.com/サラダスムージー/coupon.html?userId=' + userId; 
+		return 'https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/coupon.html?userId=' + userId; 
 	},
 	initResult(state, couponLink) {
 		if (state == 'win') {
@@ -579,20 +579,6 @@ document.addEventListener('DOMContentLoaded', function() {
   modal.init();
   window.q = app.q;
   window.params = app.params;
-/*  var uQuery = JSON.stringify({
-		redeemed: true
-	});
-	var updateCoupon = JSON.stringify({
-		redeemed: false,
-		owner: ""
-	});
-
-	axios.post('https://api.mobileads.com/mgd/upd?col=testCoupons2&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
-	.then((resp) => {
-		console.log(resp);
-	}).catch((error) => {
-		console.log(error)
-	})*/
 });
 
 export {
