@@ -7,7 +7,7 @@ firebase.initializeApp(firebaseConfig);
 var domain = 'https://www.mobileads.com';
 // var domain = 'http://localhost:8080';
 var userCollection = 'testCol2';
-var couponCollection = 'testCoupons2';
+var couponCollection = 'FamilyMartCoupons';
 var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
 
 var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
@@ -230,7 +230,7 @@ var user = {
 			        redeemed: false
 		        });
 
-			    axios.get('https://api.mobileads.com/mgd/qOne?col=testCoupons2&qobj=' + encodeURIComponent(couponQuery)).then((response) => {
+			    axios.get('https://api.mobileads.com/mgd/qOne?col=FamilyMartCoupons&qobj=' + encodeURIComponent(couponQuery)).then((response) => {
 				    console.log(response);
 			        if (typeof response.data == 'string') {
 			            resolve({
@@ -272,7 +272,7 @@ var user = {
 				owner: userId
 			});
 
-			axios.post('https://api.mobileads.com/mgd/updOne?col=testCoupons2&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
+			axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartCoupons&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
 			.then((resp) => {
 				if (resp.data.status == 'success') { //coupon redeemed, update user as winner
 					var userQuery = JSON.stringify({
