@@ -6,7 +6,7 @@ firebase.initializeApp(firebaseConfig);
 
 var domain = 'https://www.mobileads.com';
 // var domain = 'http://localhost:8080';
-var userCollection = 'testCol2';
+var userCollection = 'FamilyMartUsers';
 var couponCollection = 'FamilyMartCoupons';
 var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
 
@@ -284,7 +284,7 @@ var user = {
 						couponCode: couponInfo.couponCode
 					});
 
-				    axios.post('https://api.mobileads.com/mgd/updOne?col=testCol2&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
+				    axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
 				    .then((res) => {
 						if (resp.data.status == 'success') {
 							resolve({
@@ -355,7 +355,7 @@ var user = {
 			state: 'lose',
 		});
 		return new Promise(function(resolve, reject) {
-			axios.post('https://api.mobileads.com/mgd/updOne?col=testCol2&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
+			axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
 	    .then((response) => {
 				if (response.data.status == 'success') {
 					resolve({

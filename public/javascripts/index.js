@@ -237,6 +237,14 @@ var app = {
         }
         else if (response.data.message == 'user exist.') {
         	user.info = response.data.user;
+        	user.isWanderer = false;
+        	if (window.localStorage.getItem('localAnswers')) { // for single user per browser
+						user.loadLocal();
+					}
+					else {
+						user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state); 
+					}
+					user.source = this.params.source;
         	this.enableSaveAnswer();
         	this.continue();
 					modal.closeAll();
@@ -525,6 +533,10 @@ var app = {
 	  miniSelect.init('miniSelect');
 
 	  /* User Info */
+	  if (this.params.userId) {
+	  	user.clearLocal();
+	  }
+
 	  var localUser = localStorage.getItem('localUser');
 		if (localUser) {
 		  user.get(localUser).then((response) => {
