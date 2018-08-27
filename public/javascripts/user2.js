@@ -10,9 +10,9 @@ var userCollection = 'testCol2';
 var couponCollection = 'FamilyMartCoupons';
 var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
 
-var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
-var adUserId = '4441';
-var rmaId = '1';
+var campaignId = 'e32e385370b2e04d225d2dfa5497483b';
+var adUserId = '4831';
+var rmaId = '2';
 var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}';
 
 var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}', campaignId).replace('{{adUserId}}', adUserId).replace('{{cb}}', Date.now().toString());

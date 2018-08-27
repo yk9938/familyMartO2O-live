@@ -105,14 +105,14 @@ var app = {
 		  			this.initResult('lose');
 				});
 
-	  		// if (actualResult == 'win') {
-	  			//track win
-	  			// user.trackWin(user.info.id);
-	  		// }
-	  		// else {
-	  			// user.trackLose(user.info.id);
+	  		if (actualResult == 'win') {
+	  			// track win
+	  			user.trackWin(user.info.id);
+	  		}
+	  		else {
 	  			// track lose
-	  		// }
+	  			user.trackLose(user.info.id);
+	  		}
 
 			}
 			else {
@@ -233,7 +233,7 @@ var app = {
         	this.formSections.toPage('doneSec');
         	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/?userId=' + email + '</a>';
         	user.sendEmail(email, 'Ienomistyle クーポンキャンペーン', emailContent);
-        	// user.trackRegister();
+        	user.trackRegister(email);
         }
         else if (response.data.message == 'user exist.') {
         	user.info = response.data.user;
@@ -337,7 +337,7 @@ var app = {
 							this.continue();
 						}
 					  this.enableSaveAnswer();
-					  // user.trackRegister();
+					  user.trackRegister(userId);
 	    		}).catch((err) => {
 	    			user.isWanderer = true;
 	    			console.log(err);
@@ -400,8 +400,8 @@ var app = {
 			  	// localStorage.setItem('localAnswers', JSON.stringify(localAnswers)); // for multiple user per browser
 			  	localStorage.setItem('localAnswers', JSON.stringify(qArray)); // for single user per browser
 	  		}
-	  		// var qNo = parseInt(e.target.dataset.question);
-	  		// user.trackAnswer(this.params.userId, qNo, this.q[qNo].selectedAnswer);
+	  		var qNo = parseInt(e.target.dataset.question);
+	  		user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer);
 			  // user.saveAnswer(user.info.id, qArray);
 	  	})
 	 }
