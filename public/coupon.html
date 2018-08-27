@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var userQuery = JSON.stringify({
       id: params.userId
     });
-    xmlhttp.open("GET", 'https://api.mobileads.com/mgd/qOne?col=testCol2&qobj=' + encodeURIComponent(userQuery), true);
+    xmlhttp.open("GET", 'https://api.mobileads.com/mgd/qOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery), true);
     xmlhttp.send();
   }
   else {
