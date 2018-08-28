@@ -107,7 +107,8 @@ var app = {
 
 	  		if (actualResult == 'win') {
 	  			// track win
-	  			user.trackWin(user.info.id);
+	  			// make loser
+	  			user.trackWin(user.info.id, 'lose');
 	  		}
 	  		else {
 	  			// track lose
