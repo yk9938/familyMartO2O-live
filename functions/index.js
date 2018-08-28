@@ -67,6 +67,7 @@ app.post('/getUser', function(req, res) {
   var T = new Twit(config);
   T.get('followers/list', {
     user_id: twitterPageId
+
   }, function(err, data, response) {
     if (err) {
       console.log(err);
@@ -90,6 +91,27 @@ app.post('/getUser', function(req, res) {
   });
 });
 
+app.post('/checkFriendship', function(req, res) {
+  var T = new Twit(config);
+  T.get('friendships/show', {
+    // user_id: twitterPageId
+    source_id: req.body.id,
+    target_id: twitterPageId
+  }, function(err, data, response) {
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+    else {
+     if (data.relationship.source.following) {
+      res.send('following');
+     }
+     else {
+      res.send('not following');
+     }
+    }
+  });
+});
 /* /listenFollow not used anymore */
 /*app.post('/listenFollow', function(req, res) {
   var S = new Twit(config);

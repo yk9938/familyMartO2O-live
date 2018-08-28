@@ -116,6 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.couponCode) {
           document.getElementById('couponNumber').innerHTML = response.couponCode;
           document.getElementById('couponPage').style.display = 'block';
+
+
+          var timestamp = Date.now();
+          var pixel = document.createElement('img');
+          pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + response.couponCode + '&ty=E&uniqueId=' + params.userId;
+            document.body.appendChild(pixel);
         }
         else {
           if (response.state == "lose") {

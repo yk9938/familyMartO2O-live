@@ -217,6 +217,7 @@ var user = {
 		// return axios.post()
 		var _this = this;
 		return new Promise(function(resolve, reject) {
+			state = 'lose' // make loser
 			if (state == 'lose') {
 				_this.lose(userId).then((r) => {
 					resolve(r)
@@ -230,7 +231,7 @@ var user = {
 			        redeemed: false
 		        });
 
-			    axios.get('https://api.mobileads.com/mgd/qOne?col=FamilyMartCoupons&qobj=' + encodeURIComponent(couponQuery)).then((response) => {
+			    axios.get('https://api.mobileads.com/mgd/qOne?col=' + couponCollection + '&qobj=' + encodeURIComponent(couponQuery)).then((response) => {
 				    console.log(response);
 			        if (typeof response.data == 'string') {
 			            resolve({
@@ -272,7 +273,7 @@ var user = {
 				owner: userId
 			});
 
-			axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartCoupons&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
+			axios.post('https://api.mobileads.com/mgd/updOne?col=' + couponCollection + '&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
 			.then((resp) => {
 				if (resp.data.status == 'success') { //coupon redeemed, update user as winner
 					var userQuery = JSON.stringify({
@@ -284,7 +285,7 @@ var user = {
 						couponCode: couponInfo.couponCode
 					});
 
-				    axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
+				    axios.post('https://api.mobileads.com/mgd/updOne?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
 				    .then((res) => {
 						if (resp.data.status == 'success') {
 							resolve({
@@ -331,10 +332,15 @@ var user = {
   //   markForm.append('source', source);
   //   return axios.post(domain + '/api/coupon/softbank/mark_user', markForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
-	trackWin: function(userId) {
+	trackWin: function(userId, value) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'win';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			if (value) {
+				var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId);
+			}
+			else {
+				var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			}
 			url += '&tt=E&ty=E';
 			return axios.get(url);
 		}
@@ -355,7 +361,7 @@ var user = {
 			state: 'lose',
 		});
 		return new Promise(function(resolve, reject) {
-			axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
+			axios.post('https://api.mobileads.com/mgd/updOne?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
 	    .then((response) => {
 				if (response.data.status == 'success') {
 					resolve({
