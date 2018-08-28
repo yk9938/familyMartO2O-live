@@ -159,7 +159,7 @@ var user = {
 	  return firebase.auth().signInWithPopup(provider);
 	},
 	isFollowingTwitter: function() {
-		return axios.post(functionsDomain + '/getUser', {
+		return axios.post(functionsDomain + '/checkFriendship', {
       token: this.twitter.token,
       tokenSecret: this.twitter.secret,
       id: this.info.id

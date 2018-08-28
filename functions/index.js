@@ -94,7 +94,6 @@ app.post('/getUser', function(req, res) {
 app.post('/checkFriendship', function(req, res) {
   var T = new Twit(config);
   T.get('friendships/show', {
-    // user_id: twitterPageId
     source_id: req.body.id,
     target_id: twitterPageId
   }, function(err, data, response) {
