@@ -4,7 +4,7 @@ import miniSelect from './miniSelect';
 import modal from './modal';
 // import {winningLogic, coupon} from './winningLogic';
 import winningLogic from './winningLogic2';
-import user from './user2';
+import user from './user3';
 import '../stylesheets/miniSelect.css';
 import '../stylesheets/style.css';
 import '../stylesheets/miniCheckbox.css';
@@ -98,23 +98,26 @@ var app = {
 						user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
 						this.initResult('lose');
 					}
+					if (actualResult == 'win') {
+			  			// track win
+			  			if (response.data.couponCode) {
+			  				user.trackWin(user.info.id, response.data.couponCode);
+			  			}
+			  			else {
+				  			// make loser
+			  				user.trackWin(user.info.id, 'lose');
+			  			}
+			  		}
+			  		else {
+			  			// track lose
+			  			user.trackLose(user.info.id);
+			  		}
 				}).catch((error) => {
 					console.log(error);
 					winningLogic.processed = true;
 					user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
 		  			this.initResult('lose');
 				});
-
-	  		if (actualResult == 'win') {
-	  			// track win
-	  			// make loser
-	  			user.trackWin(user.info.id, 'lose');
-	  		}
-	  		else {
-	  			// track lose
-	  			user.trackLose(user.info.id);
-	  		}
-
 			}
 			else {
 				this.initResult(actualResult);

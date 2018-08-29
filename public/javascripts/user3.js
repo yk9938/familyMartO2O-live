@@ -7,13 +7,13 @@ firebase.initializeApp(firebaseConfig);
 var domain = 'https://www.mobileads.com';
 var apiDomain = 'https://api.mobileads.com';
 // var domain = 'http://192.168.99.100';
-var userCollection = 'testCol2';
+var userCollection = 'FamilyMartUsers';
 var couponCollection = 'FamilyMartCoupons';
 var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
 
-var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
-var adUserId = '4441';
-var rmaId = '1';
+var campaignId = 'e32e385370b2e04d225d2dfa5497483b';
+var adUserId = '4831';
+var rmaId = '2';
 var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}';
 
 var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}', campaignId).replace('{{adUserId}}', adUserId).replace('{{cb}}', Date.now().toString());
@@ -34,150 +34,60 @@ var user = {
 	},
 	get: function(userId) {
 		/* this is using the old mysql database. Not using Now */
-    return axios.get(apiDomain + '/coupons/user_info', {
-      params: {
-        id: userId
-      }
-    });
-    /* mongoDB */
-  /*  return new Promise(function(resolve, reject) {
-    	var userQuery = JSON.stringify({
-				id: userId
-			});
-			axios.get('https://api.mobileads.com/mgd/q?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery))
-			.then((response) => {
-				if (response.data.length > 0) { //user already exist
-					resolve({
-						data: {
-							message: "retrieved.",
-							user: response.data[0],
-							status: true
-						}
-					});
-				}
-				else {
-					resolve({
-						data: {
-							message: "not registered.",
-							status: false
-						}
-					});
-				}
-			}).catch((error) => {
-				console.error(error);
-				reject({
-					data: {
-						message: 'error',
-						status: false
-					}
-				});
-			});
-    });*/
+	    return axios.get(apiDomain + '/coupons/user_info', {
+	      params: {
+	        id: userId
+	      }
+	    });
 	},
 	register: function(userId) {
-		// var regForm = new FormData();
-		// regForm.append('id', userId);
-		// return axios.post(apiDomain + '/coupons/user_register', regForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
-
 		return axios.post(apiDomain + '/coupons/user_register?id=' + userId);
-		/* mongoDB */
-		/*return new Promise(function(resolve, reject) {
-			var userQuery = JSON.stringify({
-				id: userId
-			});
-			axios.get('https://api.mobileads.com/mgd/q?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery))
-			.then((response) => {
-				if (response.data.length > 0) { //user already exist
-					resolve({
-						data: {
-							message: "user exist.",
-							user: response.data[0],
-							status: false
-						}
-					});
-				}
-				else {
-					var userJson = JSON.stringify({
-						id: userId,
-						couponCode: '',
-						Answers: '[]',
-						noQuestionAnswered: 0,
-						state: '-'
-					});
-					axios.post('https://api.mobileads.com/mgd/insOne?col=' + userCollection + '&obj=' + encodeURIComponent(userJson))
-					.then((resp) => {
-						resolve({
-							data: {
-								message: "registration success.",
-								status: true
-							}
-						});
-					}).catch((err) => {
-						console.error(err);
-						reject({
-							data: {
-								message: 'error',
-								status: false
-							}
-						});
-					});
-				}
-			}).catch((error) => {
-				console.error(error);
-				reject({
-					data: {
-						message: 'error',
-						status: false
-					}
-				});
-			});
-		});*/
 	},
 	trackRegister: function(userId) {
     // track as impression
-    if (window.location.hostname.indexOf('localhost') < 0) {
-	    var type = 'page_view';
+	    if (window.location.hostname.indexOf('localhost') < 0) {
+		    var type = 'page_view';
 			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
 			return axios.get(url);
-    }
+	    }
 	},
 	sendEmail: function(email, subjectTitle, content) {
-  	var formData = new FormData();
-    formData.append('sender', 'Couponcampaign.ienomistyle.com');
-    formData.append('subject', subjectTitle);
-    formData.append('recipient', email);
-    formData.append('content', content);
-    axios.post(domain + '/mail/send', formData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function(resp) {
-      console.log(resp);
-    }).catch(function(error) {
-      console.log(error);
-    });
+	  	var formData = new FormData();
+	    formData.append('sender', 'Couponcampaign.ienomistyle.com');
+	    formData.append('subject', subjectTitle);
+	    formData.append('recipient', email);
+	    formData.append('content', content);
+	    axios.post(domain + '/mail/send', formData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function(resp) {
+	      console.log(resp);
+	    }).catch(function(error) {
+	      console.log(error);
+	    });
 	},
 	registerTwitter: function() {
 		console.log('registerTwitter');
 		var provider = new firebase.auth.TwitterAuthProvider();
-	  return firebase.auth().signInWithPopup(provider);
+		return firebase.auth().signInWithPopup(provider);
 	},
 	isFollowingTwitter: function() {
-		return axios.post(functionsDomain + '/getUser', {
-      token: this.twitter.token,
-      tokenSecret: this.twitter.secret,
-      id: this.info.id
-	  });
+		return axios.post(functionsDomain + '/checkFriendship', {
+	        token: this.twitter.token,
+	        tokenSecret: this.twitter.secret,
+	        id: this.info.id
+	    });
 	},
 	followTwitter: function() {
 		return axios.post(functionsDomain + '/followUs', {
-      token: this.twitter.token,
-      tokenSecret: this.twitter.secret
-    });
+	        token: this.twitter.token,
+	        tokenSecret: this.twitter.secret
+	    });
 	},
 	messageTwitter: function(message) {
 		return axios.post(functionsDomain + '/sendMessage', {
-      token: this.twitter.token,
-      tokenSecret: this.twitter.secret,
-      recipientId: this.info.id,
-      text: message
-     });
+		    token: this.twitter.token,
+		    tokenSecret: this.twitter.secret,
+		    recipientId: this.info.id,
+		    text: message
+		});
 	},
 	saveAnswer: function(userId, answer) {
 		/* this is using the old mysql database. Not using Now */
@@ -217,57 +127,6 @@ var user = {
 		var groupJSON = JSON.stringify(groups);
 		console.log(groupJSON);
 		return axios.post(apiDomain + '/coupons/mark_user?id=' + userId + '&state=' + state + '&groups=' + groupJSON);
-		/* mongoDB */
-		/*return new Promise(function(resolve, reject) {
-			var userQuery = JSON.stringify({
-				id: userId
-			});
-		// return axios.post()
-		/*var _this = this;
-		return new Promise(function(resolve, reject) {
-			if (state == 'lose') {
-				_this.lose(userId).then((r) => {
-					resolve(r)
-				}).catch((e) => {
-					reject(e);
-				});
-			}
-			else {
-				var couponQuery = JSON.stringify({
-			        group: groups[0],
-			        redeemed: false
-		        });
-
-			    axios.get('https://api.mobileads.com/mgd/qOne?col=FamilyMartCoupons&qobj=' + encodeURIComponent(couponQuery)).then((response) => {
-				    console.log(response);
-			        if (typeof response.data == 'string') {
-			            resolve({
-			                message: 'marked',
-			                status: true
-			            });
-			            _this.lose(userId).then((r) => {
-							resolve(r)
-						}).catch((e) => {
-							reject(e);
-						});
-			        }
-			        else {
-			        	_this.win(userId, response.data).then((r) => {
-							resolve(r)
-						}).catch((e) => {
-							reject(e);
-						});
-			        }
-			    }).catch((error) => {
-					console.log(error);
-					resolve({
-			            message: 'marked',
-			            status: true
-			        });
-			    });
-			}
-			
-		});*/
 	},
 	win: function(userId, couponInfo) {
 		return new Promise(function(resolve, reject) {
@@ -332,17 +191,16 @@ var user = {
 				});
 		    });
 		});
-		// var markForm = new FormData();
-  //   markForm.append('id', userId);
-  //   markForm.append('state', 'win');
-  //   markForm.append('couponGroup', group);
-  //   markForm.append('source', source);
-  //   return axios.post(domain + '/api/coupon/softbank/mark_user', markForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
-	trackWin: function(userId) {
+	trackWin: function(userId, value) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'win';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			if (value) {
+				var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId);
+			}
+			else {
+				var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			}
 			url += '&tt=E&ty=E';
 			return axios.get(url);
 		}
@@ -391,11 +249,6 @@ var user = {
 				});
 	    });
 	  });
-		// var markForm = new FormData();
-  //   markForm.append('id', userId);
-  //   markForm.append('state', 'lose');
-	 //  markForm.append('source', source);
-  //   return axios.post(domain + '/api/coupon/softbank/mark_user', markForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
 	passResult: function(userId, flag, source, couponLink) { // flag: 1 = win, 0 = lose
 		var psForm = new FormData();

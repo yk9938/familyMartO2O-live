@@ -1,8 +1,9 @@
 var winningLogic = {
 	winLogic: {
     '3': {
-      value: 'ローソン',
-      priority: [2]
+      // value: 'ローソン',
+      value: ['ローソン', 'セブン・イレブン', 'ファミリーマート'],
+      priority: [2, 2, 2]
     }
 /*    '6': {
       value: ['セブン-イレブン', 'ローソン'],
