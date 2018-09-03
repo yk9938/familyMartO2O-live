@@ -111,6 +111,21 @@ app.post('/checkFriendship', function(req, res) {
     }
   });
 });
+
+app.post('/getTwitterId', function(req, res) {
+  var T = new Twit(config);
+  T.get('users/lookup', {
+    screen_name: req.body.id
+  }, function(err, data, response) {
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+    else {
+      res.send(data[0].id_str);
+    }
+  })
+});
 /* /listenFollow not used anymore */
 /*app.post('/listenFollow', function(req, res) {
   var S = new Twit(config);
