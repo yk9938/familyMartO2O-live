@@ -122,7 +122,28 @@ app.post('/getTwitterId', function(req, res) {
       res.send(err);
     }
     else {
-      res.send(data[0].id_str);
+      res.json({
+        id:data[0].id_str,
+        screen_name: data[0].screen_name
+      });
+    }
+  })
+});
+
+app.post('/getTwitterName', function(req, res) {
+  var T = new Twit(config);
+  T.get('users/lookup', {
+    user_id: req.body.id
+  }, function(err, data, response) {
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+    else {
+      res.json({
+        id:data[0].id_str,
+        screen_name: data[0].screen_name
+      });
     }
   })
 });

@@ -77,7 +77,11 @@ var app = {
 			var actualResult = resultProperties.actualResult;
 			var group = resultProperties.group;
 			if (!user.isWanderer) {
-				user.mark(user.info.id, actualResult, group).then((response) => {
+				user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
+				this.initResult('lose');
+				user.trackLose(user.info.id);
+				// no more coupons left
+				/*user.mark(user.info.id, actualResult, group).then((response) => {
 					winningLogic.processed = true;
 					console.log(response)
 					if (response.data.couponCode) {
@@ -117,7 +121,7 @@ var app = {
 					winningLogic.processed = true;
 					user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
 		  			this.initResult('lose');
-				});
+				});*/
 			}
 			else {
 				this.initResult(actualResult);

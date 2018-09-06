@@ -121,17 +121,23 @@ function renderFromAPI(userId) {
     if (this.readyState == 4 && this.status == 200) {
       var response = this.responseText ? JSON.parse(this.responseText) : {};
       console.log(response);
-      if (response.user.couponCode) {
-        showCouponCode(response.user.couponCode);
-        trackCouponView(response.user.couponCode, params.userId);
-      }
-      else {
-        if (response.user.state == "lose") {
-          document.getElementById('loserPage').style.display = 'block';
+      try {
+        if (response.user.couponCode) {
+          showCouponCode(response.user.couponCode);
+          trackCouponView(response.user.couponCode, params.userId);
         }
         else {
-          document.getElementById('surveyPage').style.display = 'block';
+          if (response.user.state == "lose") {
+            document.getElementById('loserPage').style.display = 'block';
+          }
+          else {
+            document.getElementById('surveyPage').style.display = 'block';
+          }
         }
+      }
+      catch (error) {
+        console.error(error);
+        document.getElementById('surveyPage').style.display = 'block';
       }
     }
     else if (this.readyState == 4 && this.status != 200) {
