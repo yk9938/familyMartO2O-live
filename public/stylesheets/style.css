@@ -526,3 +526,10 @@ button:hover .right:after {
 .vid-wrapper {
   margin: 15px auto;
 }
+
+.end-image-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

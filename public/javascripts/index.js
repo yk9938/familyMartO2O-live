@@ -227,7 +227,7 @@ var app = {
 		/* email registration */
 	  var form = document.getElementById('regForm');
 	  form.onsubmit = (event) => {
-	    var spinner = document.getElementById('formWorking');
+/*	    var spinner = document.getElementById('formWorking');
 	    var donePage = document.getElementById('doneSec');
 	    var regPage = document.getElementById('regSec');
 		  form.style.display = 'none';
@@ -262,13 +262,13 @@ var app = {
 				console.log(error);
 				form.style.display = 'block';
         spinner.style.display = 'none';
-			});
+			});*/
     };
 
     /* twitter registration / login */
     var twitReg = document.getElementById('regTwitter');
     twitReg.onclick = () => {
-      var regLoader = document.getElementById('regWorking');
+      /*var regLoader = document.getElementById('regWorking');
       var regButtons = document.getElementById('regButtons');
       regLoader.style.display = 'block';
       regButtons.style.display = 'none';
@@ -291,7 +291,7 @@ var app = {
         var credential = error.credential;
         alert(errorMessage);
         // ..
-      });
+      });*/
     };
 
     var followBtn = document.getElementById('followBtn');
@@ -357,11 +357,13 @@ var app = {
 	    		}).catch((err) => {
 	    			user.isWanderer = true;
 	    			console.log(err);
-	    			this.pages.toPage('termsPage1');
+	    			// this.pages.toPage('termsPage1');
+	    			this.pages.toPage('campaignEndPage');
 	    		});
 	    	}
 	    	else {
-	    		this.pages.toPage('termsPage1');
+	    		// this.pages.toPage('termsPage1');
+	    		this.pages.toPage('campaignEndPage');
 	    		this.enableSaveAnswer();
 	    	}
     	}
@@ -386,7 +388,8 @@ var app = {
     }).catch((error) => {
     	user.isWanderer = true;
 			console.log(error);
-			this.pages.toPage('termsPage1');
+			// this.pages.toPage('termsPage1');
+			this.pages.toPage('campaignEndPage');
     });
 	},
 	enableSaveAnswer: function() {
@@ -499,7 +502,8 @@ var app = {
 				}
 				else {
 			    // this.pages.toPage('regPage');
-			    this.pages.toPage('termsPage1');
+			    // this.pages.toPage('termsPage1');
+			    this.pages.toPage('campaignEndPage');
 			  }
 		  }, t);
 	  }
